@@ -1,25 +1,28 @@
-// AMANI-RWDs — shared site behaviour
-document.addEventListener("DOMContentLoaded", function () {
+// Phone menu and footer year. The site works fully without this file.
+(function () {
+  document.documentElement.classList.add("js");
+
   var toggle = document.querySelector(".nav-toggle");
-  var nav = document.querySelector(".main-nav");
-
+  var nav = document.getElementById("main-nav");
   if (toggle && nav) {
+    var label = toggle.querySelector(".label");
+    function setOpen(open) {
+      nav.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      if (label) label.textContent = open ? "Close" : "Menu";
+    }
     toggle.addEventListener("click", function () {
-      var isOpen = nav.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
     });
-
-    // Close menu when a nav link is clicked (mobile)
-    nav.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
-        nav.classList.remove("open");
-        toggle.setAttribute("aria-expanded", "false");
-      });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && nav.classList.contains("open")) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
   }
 
-  // Footer year
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = new Date().getFullYear();
   });
-});
+})();
